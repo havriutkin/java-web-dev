@@ -7,6 +7,9 @@ body {
     font-size: 1.3em;
 }
 
+h1 {
+}
+
 form {
     width: 300px;
     padding: 20px;
@@ -32,4 +35,19 @@ input[type="submit"] {
     color: white;
     border: none;
     cursor: pointer;
+}
+
+.error {
+    color: red !important;
+    font-size: 0.8em !important;
+    margin: 5px 0 !important;
+    border: 1px solid red !important;
+}
+
+.success {
+    color: green !important;
+    font-size: 0.8em !important;
+    margin: 5px 0 !important;
+    border: 1px solid green !important;
+    background-color: greenyellow !important;
 }

@@ -9,10 +9,18 @@ public class DBConnection {
 
     public static Connection getConnection() throws SQLException {
         if (connection == null || connection.isClosed()) {
-            // Update with your database credentials
-            String url = "jdbc:postgresql://localhost:5432/todo_app";
-            String username = "your_db_username";
-            String password = "your_db_password";
+            try {
+                // Explicitly load the PostgreSQL driver
+                Class.forName("org.postgresql.Driver");
+            } catch (ClassNotFoundException e) {
+                throw new RuntimeException("PostgreSQL JDBC Driver is missing. Check your classpath!", e);
+            }
+
+            // Connection details
+            String url = "jdbc:postgresql://localhost:5432/java_todo_db";
+            String username = "java_todo_admin";
+            String password = "java_todo_admin";
+
             connection = DriverManager.getConnection(url, username, password);
         }
         return connection;

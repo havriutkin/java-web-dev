@@ -3,9 +3,8 @@
 <%@ taglib prefix="c" uri="jakarta.tags.core" %>
 <%@ taglib prefix="ct" uri="https://todoapp/customtags" %>
 
-
-
 <jsp:useBean id="taskList" scope="session" type="java.util.List" />
+
 <html>
     <head>
         <title>Your Tasks</title>
@@ -47,6 +46,6 @@
                 </li>
             </c:forEach>
         </ul>
-        <a href="">Logout</a>
+        <a href="${pageContext.request.contextPath}/LogoutServlet">Logout</a>
     </body>
 </html>

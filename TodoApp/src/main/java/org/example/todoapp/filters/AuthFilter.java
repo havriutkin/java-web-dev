@@ -1,4 +1,4 @@
-package org.example.todoapp.controllers;
+package org.example.todoapp.filters;
 
 import jakarta.servlet.*;
 import jakarta.servlet.http.HttpServletRequest;

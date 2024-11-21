@@ -1,5 +1,6 @@
 package org.example.todoapp.controllers;
 
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -23,7 +24,7 @@ public class UserServlet extends HttpServlet {
         authService = new AuthService(userService);
     }
 
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         if (request.getParameter("action").equals("login")) {
             // Handle login request
             handleLogin(request, response);
@@ -37,18 +38,25 @@ public class UserServlet extends HttpServlet {
         userService = null;
     }
 
-    private void handleLogin(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void handleLogin(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
         if (authService.login(username, password)) {
             // Get user
-            User user = userService.getUserByUsername(username);
+            User user = null;
+            try {
+                user = userService.getUserByUsername(username);
+            } catch (Exception e) {
+                request.setAttribute("error", "A server error occurred while logging in");
+                request.getRequestDispatcher("/jsp/login.jsp").forward(request, response);;
+            }
 
             // Set user in session
             request.getSession().setAttribute("user", user);
 
             // Get users tasks
+            assert user != null;
             List<Task> taskList = taskService.getTasksByUserId(user.getId());
             for (Task task : taskList) {
                 System.out.println(task.getDescription());
@@ -59,23 +67,23 @@ public class UserServlet extends HttpServlet {
             response.sendRedirect(request.getContextPath() + "/jsp/tasks.jsp");
         } else {
             // Redirect to login page with error message
-            // todo: Add error message
+            request.setAttribute("error", "Invalid username or password");
             response.sendRedirect(request.getContextPath() + "/jsp/login.jsp");
         }
     }
 
-    private void handleRegister(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void handleRegister(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         String username = request.getParameter("username");
         String password = request.getParameter("password");
 
         if (authService.register(username, password)) {
             // Redirect to login page with success message
-            // todo: add success message
-            response.sendRedirect("login.jsp");
+            request.setAttribute("success", "User registered successfully!");
+            request.getRequestDispatcher("/jsp/login.jsp").forward(request, response);
         } else {
             // Redirect to register page with error message
-            // todo: add error message
-            response.sendRedirect("register.jsp");
+            request.setAttribute("error", "User already exists or a server error occurred");
+            request.getRequestDispatcher("/jsp/register.jsp").forward(request, response);
         }
     }
 }

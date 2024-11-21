@@ -19,6 +19,11 @@
         <servlet-class>org.example.todoapp.controllers.TaskServlet</servlet-class>
     </servlet>
 
+    <servlet>
+        <servlet-name>LogoutServlet</servlet-name>
+        <servlet-class>org.example.todoapp.controllers.LogoutServlet</servlet-class>
+    </servlet>
+
     <servlet-mapping>
         <servlet-name>UserServlet</servlet-name>
         <url-pattern>/UserServlet</url-pattern>
@@ -29,9 +34,14 @@
         <url-pattern>/TaskServlet</url-pattern>
     </servlet-mapping>
 
+    <servlet-mapping>
+        <servlet-name>LogoutServlet</servlet-name>
+        <url-pattern>/LogoutServlet</url-pattern>
+    </servlet-mapping>
+
     <filter>
         <filter-name>AuthFilter</filter-name>
-        <filter-class>org.example.todoapp.controllers.AuthFilter</filter-class>
+        <filter-class>org.example.todoapp.filters.AuthFilter</filter-class>
     </filter>
 
     <filter-mapping>
@@ -41,6 +51,17 @@
         <url-pattern>/tasks.jsp</url-pattern>
         <url-pattern>/TaskServlet</url-pattern>
     </filter-mapping>
+
+    <filter>
+        <filter-name>DBFilter</filter-name>
+        <filter-class>org.example.todoapp.filters.DBFilter</filter-class>
+    </filter>
+
+    <filter-mapping>
+        <filter-name>DBFilter</filter-name>
+        <url-pattern>/*</url-pattern>
+    </filter-mapping>
+
 
     <session-config>
         <session-timeout>30</session-timeout>

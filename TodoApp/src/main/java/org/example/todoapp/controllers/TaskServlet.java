@@ -34,26 +34,30 @@ public class TaskServlet extends HttpServlet {
         }
     }
 
-    private void handleAddTask(HttpServletRequest request, HttpServletResponse response) throws IOException {
+    private void handleAddTask(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         Task task = new Task();
         task.setDescription(request.getParameter("description"));
 
         // Convert the string to a Date object
-        try {
-            Date deadline = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("deadline"));
-            task.setDeadline(deadline);
-        } catch (ParseException e) {
-            e.printStackTrace();
+        if (request.getParameter("deadline").isEmpty()) {
+            task.setDeadline(null);
+        } else {
+            try {
+                Date deadline = new SimpleDateFormat("yyyy-MM-dd").parse(request.getParameter("deadline"));
+                task.setDeadline(deadline);
+            } catch (ParseException e) {
+                e.printStackTrace();
+                request.setAttribute("error", "Invalid date format");
+                request.getRequestDispatcher("/jsp/tasks.jsp").forward(request, response);
+            }
         }
 
         // Get user from session
         User user = (User) request.getSession().getAttribute("user");
         task.setUserId(user.getId());
+        task.setCompleted(false);
 
         // Set consecutive id
-        List<Task> tasks = taskService.getTasksByUserId(task.getUserId());
-        task.setId(tasks.size() + 1);
-
         taskService.addTask(task);
 
         List<Task> taskList = taskService.getTasksByUserId(user.getId());

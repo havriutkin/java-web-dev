@@ -10,24 +10,41 @@ public class AuthService {
     }
 
     public boolean register(String username, String password) {
-        // Implement this method
-        return false;
+        try {
+            // Check if user already exists
+            User existingUser = userService.getUserByUsername(username);
+            if (existingUser != null) {
+                System.out.println("User already exists!");
+                return false;
+            }
+
+            // todo: hash password
+
+            // Add user
+            return userService.addUser(username, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            return false;
+        }
     }
 
     public boolean login(String username, String password) {
-        // Get user
-        User user;
         try {
-            user = userService.getUserByUsername(username);
+            User user = userService.getUserByUsername(username);
+
+            // If user does not exist
+            if (user == null) {
+                System.out.println("User not found!");
+                return false;
+            }
+
+            // todo: hash password
+
+            // Validate credentials
+            return user.getPassword().equals(password);
         } catch (Exception e) {
+            e.printStackTrace();
             return false;
         }
-
-        // print user name and password
-        System.out.println(user.getUsername());
-        System.out.println(user.getPassword());
-
-        // Check if the username and password are correct
-        return user.getPassword().equals(password);
     }
 }
